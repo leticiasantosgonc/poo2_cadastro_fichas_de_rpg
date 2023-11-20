@@ -201,15 +201,26 @@ public class main {
                         racaDAO.insert(rac);
                         personagemRacaDAO.associarRacaPersonagem(per.getIdPersonagem(), rac.getIdRaca());
                         break;
-                    case 5:   
-                        //procurar personagem
+                    case 5:
+                        System.out.println("\nProcurar personagem\n");
+                        System.out.println("Digite o ID do personagem: ");
+                        aux = scan.nextLine();
+                        int idPersonagem = Integer.parseInt(aux);
+                        
+                        Personagem personagem = personagemDAO.read(idPersonagem);
+                        if(personagem != null){
+                            System.out.println("id: "+ personagem.getIdPersonagem());
+                            System.out.println("nome: "+ personagem.getNome());
+                            System.out.println("nivel: "+ personagem.getNivel());
+                            System.out.println("_______________________");
+                        }
                         break;
                     case 6:  
                         System.out.println("\nAlterar personagem\n");
                         listaPersonagens = contaPersonagemDAO.buscarPersonagemConta(loggedAccount.getIdConta());
                         if(!listaPersonagens.isEmpty()){
                             for(int i = 0; i < listaPersonagens.size(); i++){
-                                Personagem personagem = listaPersonagens.get(i);
+                                personagem = listaPersonagens.get(i);
 
                                 System.out.println("id: "+ personagem.getIdPersonagem());
                                 System.out.println("nome: "+ personagem.getNome());
@@ -221,9 +232,9 @@ public class main {
                         }                        
                         System.out.println("Digite o id do personagem: ");
                         aux = scan.nextLine();
-                        int idPersonagem = Integer.parseInt(aux);
+                        idPersonagem = Integer.parseInt(aux);
 
-                        Personagem personagem = personagemDAO.read(idPersonagem);
+                        personagem = personagemDAO.read(idPersonagem);
 
                         if (personagem != null) {
                             System.out.println("Dados do personagem:");
