@@ -27,7 +27,8 @@ public class main {
     static ContaPersonagemDAO contaPersonagemDAO = new ContaPersonagemDAO();
     static PersonagemRacaDAO personagemRacaDAO = new PersonagemRacaDAO();
     static Conta loggedAccount;
-    
+    static ArrayList<Personagem> listaPersonagens;
+            
     public static void main(String[] args) {
         int op;
         String aux;
@@ -101,7 +102,6 @@ public class main {
                 System.out.println("|1. Listar personagens                 |"
                         + "\n|2. Atualizar conta                    |"
                         + "\n|3. Deletar conta                      |"
-                        + "\n|4. Deletar conta                      |"
                         + "\n|4. Inserir personagem                 |"
                         + "\n|5. Procurar personagem                |"
                         + "\n|6. Atualizar personagem               |"
@@ -117,7 +117,7 @@ public class main {
                         break;
                     case 1: 
                         System.out.println("\nListar seus personagens \n");
-                        ArrayList<Personagem> listaPersonagens = contaPersonagemDAO.buscarPersonagemConta(loggedAccount.getIdConta());
+                        listaPersonagens = contaPersonagemDAO.buscarPersonagemConta(loggedAccount.getIdConta());
                         if(!listaPersonagens.isEmpty()){
                             for(int i = 0; i < listaPersonagens.size(); i++){
                                 Personagem personagem = listaPersonagens.get(i);
@@ -205,11 +205,69 @@ public class main {
                         //procurar personagem
                         break;
                     case 6:  
-                        //alterar personagem
+                        System.out.println("\nAlterar personagem\n");
+                        listaPersonagens = contaPersonagemDAO.buscarPersonagemConta(loggedAccount.getIdConta());
+                        if(!listaPersonagens.isEmpty()){
+                            for(int i = 0; i < listaPersonagens.size(); i++){
+                                Personagem personagem = listaPersonagens.get(i);
+
+                                System.out.println("id: "+ personagem.getIdPersonagem());
+                                System.out.println("nome: "+ personagem.getNome());
+                                System.out.println("nivel: "+ personagem.getNivel());
+                                System.out.println("_______________________");
+                            }
+                        } else {
+                            System.out.println("Conta nao tem personagem vinculado :(");
+                        }                        
+                        System.out.println("Digite o id do personagem: ");
+                        aux = scan.nextLine();
+                        int idPersonagem = Integer.parseInt(aux);
+
+                        Personagem personagem = personagemDAO.read(idPersonagem);
+
+                        if (personagem != null) {
+                            System.out.println("Dados do personagem:");
+                            System.out.println("id: " + personagem.getIdPersonagem());
+                            System.out.println("nome: " + personagem.getNome());
+                            System.out.println("nivel: " + personagem.getNivel());
+
+                            System.out.println("Digite o novo nome (ou Enter para manter o mesmo): ");
+                            String novoNome = scan.nextLine();
+                            if (!novoNome.isEmpty()) {
+                                personagem.setNome(novoNome);
+                            }
+
+                            System.out.println("Digite o novo nivel (ou Enter para manter o mesmo): ");
+                            String novoNivel = scan.nextLine();
+                            if (!novoNivel.isEmpty()) {
+                                int nivel = Integer.parseInt(novoNivel);
+                                personagem.setNivel(nivel);
+                            }
+
+                            if (personagemDAO.update(personagem) > 0) {
+                                System.out.println("\nPersonagem atualizado com sucesso! :)");
+                            } else {
+                                System.out.println("\nErro: operacao nao funcionou como esperado");
+                            }
+                        } else {
+                            System.out.println("\nPersonagem não encontrado.");
+                        }
                         break;
                     case 7:
                         System.out.println("\nDeletar personagem\n");
-                        personagemDAO.list();
+                        listaPersonagens = contaPersonagemDAO.buscarPersonagemConta(loggedAccount.getIdConta());
+                        if(!listaPersonagens.isEmpty()){
+                            for(int i = 0; i < listaPersonagens.size(); i++){
+                                personagem = listaPersonagens.get(i);
+
+                                System.out.println("id: "+ personagem.getIdPersonagem());
+                                System.out.println("nome: "+ personagem.getNome());
+                                System.out.println("nivel: "+ personagem.getNivel());
+                                System.out.println("_______________________");
+                            }
+                        } else {
+                            System.out.println("Conta nao tem personagem vinculado :(");
+                        }
                         System.out.println("Digite o id do personagem que deseja deletar: ");
                         String aux1 = scan.nextLine();
                         int id = Integer.parseInt(aux1);
