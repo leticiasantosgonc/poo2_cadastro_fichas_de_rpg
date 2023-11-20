@@ -98,14 +98,14 @@ public class main {
             do {
                 System.out.println("\n----------------------------------------");
                 System.out.println("|             MENU USUARIO             |");
-                System.out.println("|1. Listar personagens                   |"
+                System.out.println("|1. Listar personagens                 |"
                         + "\n|2. Atualizar conta                    |"
                         + "\n|3. Deletar conta                      |"
                         + "\n|4. Deletar conta                      |"
                         + "\n|4. Inserir personagem                 |"
-                        + "\n|6. Procurar personagem                |"
-                        + "\n|7. Atualizar personagem               |"
-                        + "\n|8. Deletar personagem                 |");                
+                        + "\n|5. Procurar personagem                |"
+                        + "\n|6. Atualizar personagem               |"
+                        + "\n|7. Deletar personagem                 |");                
                 System.out.println("----------------------------------------");
                 System.out.println("|0. Sair\nEscolha uma opcao -> ");       
                 aux = scan.nextLine();                
@@ -208,7 +208,22 @@ public class main {
                         //alterar personagem
                         break;
                     case 7:
-                        //deletar personagem 
+                        System.out.println("\nDeletar personagem\n");
+                        personagemDAO.list();
+                        System.out.println("Digite o id do personagem que deseja deletar: ");
+                        String aux1 = scan.nextLine();
+                        int id = Integer.parseInt(aux1);
+
+                        System.out.println("Insira a senha para prosseguir: ");
+                        snha = scan.nextLine();
+                        if (loggedAccount.getSenha().equals(snha)) {
+                            contaPersonagemDAO.desassociarPersonagemConta(loggedAccount.getIdConta(), id);    
+                            personagemRacaDAO.desassociarRacaPersonagem(id);         
+                            personagemDAO.delete(id);
+                            System.out.println("Personagem deletado com sucesso");
+                        } else {
+                            System.out.println("Senha incorreta. Tente novamente.");
+                        }
                         break;                   
                     default:
                         System.out.println("Opcao invalida! Tente novamente x.x");

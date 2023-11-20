@@ -21,12 +21,11 @@ public class PersonagemRacaDAO {
         }
     }
 
-    public void desassociarRacaPersonagem(int idPersonagem, int idRaca){
+    public void desassociarRacaPersonagem(int idPersonagem){
         try{
             Connection conn = ConexaoMySQL.getConexaoMySQL();
-            PreparedStatement ps = conn.prepareStatement("DELETE FROM personagemRaca WHERE idPersonagem =? AND idRaca=?");
+            PreparedStatement ps = conn.prepareStatement("DELETE FROM personagemRaca WHERE idPersonagem =?");
             ps.setInt(1, idPersonagem);
-            ps.setInt(2, idRaca);
 
             ps.executeUpdate();
         }catch(SQLException ex){

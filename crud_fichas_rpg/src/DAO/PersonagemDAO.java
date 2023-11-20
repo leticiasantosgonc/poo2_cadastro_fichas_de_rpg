@@ -97,8 +97,9 @@ public class PersonagemDAO {
         }
         return 0;
     }
-    public int delete(int idPersonagem){ //deleta uma conta
+    public int delete(int idPersonagem){ //deleta um personagem
         try{
+            
            Connection conn = ConexaoMySQL.getConexaoMySQL();
            PreparedStatement ps = conn.prepareStatement("DELETE FROM personagem WHERE idPersonagem=?");
            ps.setInt(1, idPersonagem);
