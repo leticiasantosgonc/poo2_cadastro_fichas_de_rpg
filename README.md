@@ -13,7 +13,7 @@ O sistema é desenvolvido em JAVA com banco de dados relacional MySQL. 🎲📜
 
 As seguintes ferramentas foram usadas na construção do projeto:
 
-- [Java](https://www.oracle.com/br/java/technologies/downloads/#jdk21-windows)
+- [Java](https://www.oracle.com/br/java/technologies/downloads/#jdk21-windows) JDK 21
 - [MySQL](https://www.sqlite.org/index.html)
 - [XAMPP](https://www.apachefriends.org/pt_br/index.html)
 - [MySQL Workbench](https://dev.mysql.com/downloads/workbench/)

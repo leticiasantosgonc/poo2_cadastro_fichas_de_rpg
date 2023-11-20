@@ -17,6 +17,7 @@ public class Raca {
     }
 
     public Raca(String nome, String descricao, int fraqueza, int classe) {
+        this.idRaca = idRaca;
         this.nome = nome;
         this.descricao = descricao;
         this.fraqueza = fraqueza;

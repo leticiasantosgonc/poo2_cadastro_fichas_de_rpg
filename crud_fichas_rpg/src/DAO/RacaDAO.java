@@ -24,6 +24,16 @@ public class RacaDAO {
             ps.setInt(4, raca.getClasse());
 
             int rowCount = ps.executeUpdate();
+            ResultSet generatedKeys = ps.getGeneratedKeys();
+            
+            if(generatedKeys.next()){
+                int generatedId = generatedKeys.getInt(1);
+                raca.setIdRaca(generatedId);
+            }else{
+                System.out.println("Nenhuma chave foi gerada");
+            }
+            generatedKeys.close();
+            ps.close();
             conn.close();
             return rowCount;
         }catch(SQLException ex){
@@ -31,7 +41,7 @@ public class RacaDAO {
         return 0;
         }
     }
-    
+     
     public Raca read(int idRaca){ //procurar uma raca
         try{
             Connection conn = ConexaoMySQL.getConexaoMySQL();

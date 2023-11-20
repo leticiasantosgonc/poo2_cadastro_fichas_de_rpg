@@ -14,7 +14,7 @@ CREATE TABLE personagem(
     nivel int NOT NULL
 );
 
-CREATE TABLE raca(nome
+CREATE TABLE raca(
 	idRaca int PRIMARY KEY AUTO_INCREMENT,
 	nome varchar(100) NOT NULL, 
     descricao varchar(100) NOT NULL, 
@@ -24,7 +24,7 @@ CREATE TABLE raca(nome
 
 SELECT * FROM raca;
 
-CREATE TABLE contaPersonagem(personagem
+CREATE TABLE contaPersonagem(
 	idConta int,
     idPersonagem int,
     FOREIGN KEY (idConta) REFERENCES conta(idConta),

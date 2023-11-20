@@ -22,13 +22,22 @@ public class PersonagemDAO {
             ps.setInt(2, personagem.getNivel());
 
             int rowCount = ps.executeUpdate();
+            ResultSet generatedKeys = ps.getGeneratedKeys();
+            if(generatedKeys.next()){
+                int generatedId = generatedKeys.getInt(1);
+                personagem.setIdPersonagem(generatedId);
+            }else{
+                System.out.println("Nenhuma chave foi gerada");
+            }
+            generatedKeys.close();
+            ps.close();
             conn.close();
             return rowCount;
         }catch(SQLException ex){
             System.out.println(ex);
         return 0;
         }
-    }
+    } 
     
     public Personagem read(int idPersonagem){ //procurar um personagem
         try{

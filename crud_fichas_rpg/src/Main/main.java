@@ -2,6 +2,7 @@ package Main;
 
 import DAO.ContaDAO;
 import DAO.ContaPersonagemDAO;
+import DAO.PersonagemDAO;
 import DAO.PersonagemRacaDAO;
 import DAO.RacaDAO;
 import Model.Conta;
@@ -20,6 +21,7 @@ public class main {
     static Connection conn = null;
     static ConexaoMySQL conexao = new ConexaoMySQL();
     
+    static PersonagemDAO personagemDAO = new PersonagemDAO();
     static ContaDAO contaDAO = new ContaDAO();
     static RacaDAO racaDAO = new RacaDAO();
     static ContaPersonagemDAO contaPersonagemDAO = new ContaPersonagemDAO();
@@ -173,8 +175,9 @@ public class main {
                                 String niv = scan.nextLine();
                                 
                                 op = Integer.parseInt(niv);
-                                
                                 Personagem per = new Personagem(nomeP, op);
+                                personagemDAO.insert(per);
+                                
                                 contaPersonagemDAO.associarPersonagemConta(cnt.getIdConta(), per.getIdPersonagem());
                                
                                 System.out.println("Qual raca do personagem? ");
@@ -192,6 +195,7 @@ public class main {
                                 op = Integer.parseInt(desc);
                                 
                                 Raca rac = new Raca(nomeR, desc, op2, op);
+                                racaDAO.insert(rac);
                                 personagemRacaDAO.associarRacaPersonagem(per.getIdPersonagem(), rac.getIdRaca());
                                 
                             } else {

@@ -13,6 +13,7 @@ public class Personagem {
     }
 
     public Personagem(String nome, int nivel) {
+        this.idPersonagem = idPersonagem;
         this.nome = nome;
         this.nivel = nivel;
     } 

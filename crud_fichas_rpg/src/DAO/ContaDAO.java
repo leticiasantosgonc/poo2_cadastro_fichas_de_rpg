@@ -37,7 +37,8 @@ public class ContaDAO {
             
             if(rs.next()){
                 String senha = rs.getString(3);
-                Conta conta = new Conta (login, senha);
+                int idConta = rs.getInt(1);
+                Conta conta = new Conta (idConta, login, senha);
                 return conta;
             }
             conn.close();
