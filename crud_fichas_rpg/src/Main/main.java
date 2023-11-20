@@ -1,8 +1,11 @@
 package Main;
 
 import DAO.ContaDAO;
+import DAO.ContaPersonagemDAO;
+import DAO.PersonagemRacaDAO;
 import DAO.RacaDAO;
 import Model.Conta;
+import Model.Personagem;
 import Model.Raca;
 import java.sql.*;
 import java.util.ArrayList;
@@ -19,6 +22,8 @@ public class main {
     
     static ContaDAO contaDAO = new ContaDAO();
     static RacaDAO racaDAO = new RacaDAO();
+    static ContaPersonagemDAO contaPersonagemDAO = new ContaPersonagemDAO();
+    static PersonagemRacaDAO personagemRacaDAO = new PersonagemRacaDAO();
 
     public static void main(String[] args) {
         int op;
@@ -30,9 +35,18 @@ public class main {
             System.out.println("Erro: não foi possível conectar ao banco");
         }else{
             do {
-                System.out.println("\n--MENU CONTA--\n1. Inserir conta\n2. Listar contas\n3. Procurar conta\n4. Atualizar conta\n5. Deletar conta"
-                        + "\n\n--MENU RACA--\n6. Inserir raca\n7. Listar racas\n8. Procurar raca\n9. Atualizar raca\n10. Deletar raca");
-                System.out.println("0. Sair\nEscolha uma opcao -> ");          
+                System.out.println("\n----------------------------------------");
+                System.out.println("|             MENU USUARIO             |");
+                System.out.println("|1. Inserir conta                      |"
+                        + "\n|2. Listar personagens                 |"
+                        + "\n|3. Atualizar conta                    |"
+                        + "\n|4. Deletar conta                      |"
+                        + "\n|5. Inserir personagem                 |"
+                        + "\n|6. Procurar personagem                |"
+                        + "\n|7. Atualizar personagem               |"
+                        + "\n|8. Deletar personagem                 |");                
+                System.out.println("----------------------------------------");
+                System.out.println("|0. Sair\nEscolha uma opcao -> ");       
                 aux = scan.nextLine();                
                 op = Integer.parseInt(aux);
 
@@ -56,148 +70,149 @@ public class main {
                         }
                         break;
                     case 2: 
-                        System.out.println("\nLista de contas\n");
-                        ArrayList<Conta> contas = contaDAO.list();
-                        for (int i = 0; i < contas.size(); i++) {
-                            Conta cta = contas.get(i);
-                            System.out.println("id: " + cta.getIdConta());
-                            System.out.println("login: " + cta.getLogin());
+                         System.out.println("\nListar seus personagens \n");
+                        System.out.println("Informe o id da conta: ");
+                        aux = scan.nextLine();
+                        op = Integer.parseInt(aux);
+                        Conta ct = contaDAO.read(op);
+                        
+                        if (ct != null) {
+                            System.out.println("\nDados da conta\n");
+                            System.out.println("id: " + ct.getIdConta());
+                            System.out.println("login: " + ct.getLogin());
                             System.out.println("________________________________");
-                        }   
+                            
+                            System.out.println("Deseja ver os personagens? 1. Sim ou 2. Nao");
+                            aux = scan.nextLine();
+                            op = Integer.parseInt(aux);
+                            
+                            if(op == 1){
+                                ArrayList<Personagem> listaPersonagens = contaPersonagemDAO.buscarPersonagemConta(op);
+                                if(listaPersonagens.size() > 0){
+                                    for(int i = 0; i < listaPersonagens.size(); i++){
+                                        Personagem personagem = listaPersonagens.get(i);
+
+                                        System.out.println("id: "+ personagem.getIdPersonagem());
+                                        System.out.println("nome: "+ personagem.getNome());
+                                        System.out.println("nivel: "+ personagem.getNivel());
+                                        System.out.println("_______________________");
+                                    }
+                                } else {
+                                    System.out.println("Conta nao tem personagem vinculado :(");
+                                }                          
+                            
+                            } else {
+                            System.out.println("\nErro: conta nao localizada! Junte-se a nos :)\n");
+                            }
+                        }
+                         
                         break;
                     case 3:
-                        //procurar uma conta
+                        System.out.println("\nAlterar conta\n");
+                        System.out.println("Digite o id da conta: ");
+                        aux = scan.nextLine();
+                        int cod = Integer.parseInt(aux);
+                        Conta cont = contaDAO.read(cod);
+                        if (cont == null) {
+                            System.out.println("\n Conta nao localizada em nosso servidor :(\nJunte-se a nos!!");
+                        } else {
+                                System.out.println("\nInforme a senha: ");
+                                aux = scan.nextLine();                            
+                                if(aux.equals(cont.getSenha())){
+                                    System.out.println("Bem vindo(a) " + cont.getLogin());
+                                    System.out.println("\n Deseja alterar login? 1. Sim ou 2. Nao");
+                                    aux = scan.nextLine();
+                                    int resp = Integer.parseInt(aux);
+                                    
+                                    if (resp == 1) {
+                                        System.out.println("Digite o novo login: ");
+                                        login = scan.nextLine();
+                                        cont.setLogin(login);
+                                        System.out.println("Alterado com sucesso " + cont.getLogin());
+                                    }
+                                    System.out.println("Deseja alterar a senha? 1. Sim ou 2. Nao");
+                                    aux = scan.nextLine();
+                                    resp = Integer.parseInt(aux);
+                                    
+                                    if (resp == 1) {
+                                        System.out.println("Digite a nova senha: ");
+                                        senha = scan.nextLine();
+                                        cont.setSenha(senha);
+                                    }                                
+                                }
+                                if (contaDAO.update(cont) > 0) {
+                                    System.out.println("\nConta atualizada com sucesso! :)");
+                                } else {
+                                    System.out.println("\nErro: operacao nao funcionou como esperado");
+                                }
+                        }
                         break;
                     case 4:
-                        //alterar uma conta
-                        break;
-                    case 5:
-                        System.out.println("\nDeletar conta\n");
+                       System.out.println("\nDeletar conta\n");
                         System.out.println("Qual o id da conta?");
                         aux = scan.nextLine();                
                         op = Integer.parseInt(aux);
                         if (contaDAO.delete(op) > 0) 
-                            System.out.println("\nVoce ira fazer falta :(");                         
+                            System.out.println("\nVoce ira fazer falta :("); 
                         break;
-                    case 6:
-                        System.out.println("\nCadastrar raca\n");
-                        System.out.println("Digite o nome: ");
-                        String nome = scan.nextLine();
+                    case 5:
+                        System.out.println("\nInsira o login: \n");
+                        String lgn = scan.nextLine();
                         
-                        System.out.println("Digite a descricao: ");
-                        String descricao = scan.nextLine();
-                        
-                        System.out.println("\nQuem é a fraqueza? digite o id ");
-                        System.out.println("1. Paladino\n2. Arqueiro\n3. Mago\n4. Bruxo\n5. Druida\n6. Ladino\n7. Bardo");
-                        aux = scan.nextLine();                
-                        int fraqueza = Integer.parseInt(aux);
-                        
-                        if(fraqueza > 0 && fraqueza < 8){
-                            System.out.println("\nDigite o id da classe: ");    
-                            System.out.println("1. Paladino\n2. Arqueiro\n3. Mago\n4. Bruxo\n5. Druida\n6. Ladino\n7. Bardo");
-                            aux = scan.nextLine();                
-                            int classe = Integer.parseInt(aux);
-
-                            if(classe > 0 && classe < 8){
-                                Raca raca = new Raca(nome, descricao, fraqueza, classe);
-                                if (racaDAO.insert(raca) > 0) {
-                                    System.out.println("\nRaca cadastrada com sucesso :)!");
-                                } else {
-                                    System.out.println("\nErro: operação não funcionou como esperado");
-                                }
-                            } else { 
-                                System.out.println("Inválido, tente novamente: ");
-                                }
-                            }
-                        
-                        else {
-                            System.out.println("Inválido, tente novamente: ");
-                        }
-                        break;
-                    case 7:
-                        System.out.println("\nLista de racas\n");
-                        ArrayList<Raca> racas = racaDAO.list();
-                        for (int i = 0; i < racas.size(); i++) {
-                            Raca rca = racas.get(i);
-                            System.out.println("id: " + rca.getIdRaca());
-                            System.out.println("nome: " + rca.getNome());
-                            System.out.println("descricao: " + rca.getDescricao());
-                            if(rca.getFraqueza() == 1){
-                                System.out.println("fraqueza: Paladino");
-                            }
-                            if(rca.getFraqueza() == 2){
-                                 System.out.println("fraqueza: Arqueiro");
-                            }                            
-                            if(rca.getFraqueza() == 3){
-                                System.out.println("fraqueza: Mago");
-                            }
-                            if(rca.getFraqueza() == 4){
-                                System.out.println("fraqueza: Bruxo");
-                            }
-                            if(rca.getFraqueza() == 5){
-                                System.out.println("fraqueza: Druida");
-                            }
-                            if(rca.getFraqueza() == 6){
-                                System.out.println("fraqueza: Ladino");
-                            } else if(rca.getFraqueza() == 7) {
-                                System.out.println("fraqueza: Bardo");
+                        Conta cnt = contaDAO.readLogin(lgn);
+                        if(cnt != null){
+                            System.out.println("Insira a senha: \n");
+                            String snha = scan.nextLine();
+                            
+                            if(cnt.getSenha().equals(snha)){
+                                System.out.println("Hora de cadastrar o seu personagem :)\n");
+                                System.out.println("Informe o nome do personagem: ");
+                                String nomeP = scan.nextLine();
+                                
+                                System.out.println("Informe o nivel do personagem: ");
+                                String niv = scan.nextLine();
+                                
+                                op = Integer.parseInt(niv);
+                                
+                                Personagem per = new Personagem(nomeP, op);
+                                contaPersonagemDAO.associarPersonagemConta(cnt.getIdConta(), per.getIdPersonagem());
+                               
+                                System.out.println("Qual raca do personagem? ");
+                                String nomeR = scan.nextLine();
+                                
+                                System.out.println("Descreva o personagem :)");
+                                String desc = scan.nextLine();
+                                
+                                System.out.println("Qual a fraqueza? ");
+                                String fraqueza = scan.nextLine();
+                                int op2 = Integer.parseInt(fraqueza);
+                                
+                                System.out.println("Qual classe? ");
+                                String classe = scan.nextLine();
+                                op = Integer.parseInt(desc);
+                                
+                                Raca rac = new Raca(nomeR, desc, op2, op);
+                                personagemRacaDAO.associarRacaPersonagem(per.getIdPersonagem(), rac.getIdRaca());
+                                
+                            } else {
+                                System.out.println("Senha invalida!");
                             }
                             
-                            if(rca.getClasse() == 1){
-                                System.out.println("classe: Paladino");
-                            }
-                            if(rca.getClasse() == 2){
-                                 System.out.println("classe: Arqueiro");
-                            }                            
-                            if(rca.getClasse() == 3){
-                                System.out.println("classe: Mago");
-                            }
-                            if(rca.getClasse() == 4){
-                                System.out.println("classe: Bruxo");
-                            }
-                            if(rca.getClasse() == 5){
-                                System.out.println("classe: Druida");
-                            }
-                            if(rca.getClasse() == 6){
-                                System.out.println("classe: Ladino");
-                            } else if(rca.getClasse() == 7){
-                                System.out.println("classe: Bardo");
-                            }
-                            System.out.println("________________________________");
-                        } 
+                        } else{ 
+                            System.out.println("Conta nao existe :(\nCadastre-se para ter acesso ao sistema");
+                        }                         
                         break;
-                    case 8:
-                        //procurar uma raca
+                    case 6:   
+                        //procurar personagem
                         break;
-                    case 9:
-                        //alterar raca
-                        break;
-                    case 10:
-                        System.out.println("\nDeletar raca\n");
-                        System.out.println("Qual o id da raca?");
-                        aux = scan.nextLine();                
-                        op = Integer.parseInt(aux);
-                        if (contaDAO.delete(op) > 0) 
-                            System.out.println("\nRaca não faz mais parte do mundo");                         
-                        break;
-                    //TODO: essa parte pode funcionar se estiver logado no sistema
-                    case 11:
-                        //cadastrar pesonagem
-                        break;
-                    case 12:
-                        //listar personagens
-                        break;
-                    case 13:
-                        //procurar um personagem
-                        break;
-                    case 14:
+                    case 7:  
                         //alterar personagem
                         break;
-                    case 15:
-                        //deletar personagem
-                        break;
+                    case 8:
+                        //deletar personagem 
+                        break;                   
                     default:
-                        System.out.println("Opção inválida! Tente novamente :)");
+                        System.out.println("Opcao invalida! Tente novamente :)");
                 }
             } while (op != 0);
         }

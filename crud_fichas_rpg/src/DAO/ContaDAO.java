@@ -28,6 +28,25 @@ public class ContaDAO {
         }
     }
     
+    public Conta readLogin(String login){ //procurar uma conta pelo login
+        try{
+            Connection conn = ConexaoMySQL.getConexaoMySQL();
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM conta WHERE login=?");
+            ps.setString(1, login);
+            ResultSet rs = ps.executeQuery();
+            
+            if(rs.next()){
+                String senha = rs.getString(3);
+                Conta conta = new Conta (login, senha);
+                return conta;
+            }
+            conn.close();
+        }catch(SQLException ex){
+            System.out.println(ex);
+        }
+        return null;
+    }
+    
     public Conta read(int idConta){ //procurar uma conta
         try{
             Connection conn = ConexaoMySQL.getConexaoMySQL();

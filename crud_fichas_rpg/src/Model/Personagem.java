@@ -12,6 +12,12 @@ public class Personagem {
         this.nivel = nivel;
     }
 
+    public Personagem(String nome, int nivel) {
+        this.nome = nome;
+        this.nivel = nivel;
+    } 
+    
+
     public int getIdPersonagem() {
         return idPersonagem;
     }
