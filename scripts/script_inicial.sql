@@ -4,7 +4,7 @@ USE rpg;
 
 CREATE TABLE conta(
 	idConta int PRIMARY KEY AUTO_INCREMENT,
-    login varchar(100) NOT NULL, 
+    login varchar(100) NOT NULL UNIQUE, 
     senha varchar(100) NOT NULL
 );
 

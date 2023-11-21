@@ -83,7 +83,7 @@ public class main {
                             usuarioLogado = conta;  
                             break;  
                         } else {
-                            System.out.println("\nErro: operacao nao funcionou como esperado");
+                            System.out.println("\nErro! Nao foi possivel criar conta");
                         }
                     } else if (count == 0) {
                         System.out.println("Terminando execucao.");
@@ -251,6 +251,7 @@ public class main {
                             }
                         } else {
                             System.out.println("Conta nao tem personagem vinculado :(");
+                            break;
                         }                        
                         System.out.println("Digite o id do personagem: ");
                         aux = scan.nextLine();
@@ -300,6 +301,7 @@ public class main {
                             }
                         } else {
                             System.out.println("Conta nao tem personagem vinculado :(");
+                            break;
                         }
                         System.out.println("Digite o id do personagem que deseja deletar: ");
                         String aux1 = scan.nextLine();

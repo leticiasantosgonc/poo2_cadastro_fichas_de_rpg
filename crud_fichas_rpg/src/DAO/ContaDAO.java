@@ -25,8 +25,6 @@ public class ContaDAO {
             if (generatedKeys.next()) {
                 int generatedId = generatedKeys.getInt(1);
                 conta.setIdConta(generatedId);
-            } else {
-                System.out.println("Nenhuma chave foi gerada");
             }
 
             conn.close();
