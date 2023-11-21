@@ -2,8 +2,10 @@
 package DAO;
 
 import Main.ConexaoMySQL;
+import Model.Raca;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class PersonagemRacaDAO {
@@ -33,4 +35,35 @@ public class PersonagemRacaDAO {
         }
     }
     
+    public Raca getRacaById(int idPersonagem) {
+        try {
+            Connection conn = ConexaoMySQL.getConexaoMySQL();
+            String query = "SELECT raca.* FROM personagemRaca "
+                         + "JOIN raca ON personagemRaca.idRaca = raca.idRaca "
+                         + "WHERE personagemRaca.idPersonagem = ?";
+            
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setInt(1, idPersonagem);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                int idRaca = rs.getInt("idRaca");
+                String nome = rs.getString("nome");
+                String descricao = rs.getString("descricao");
+                int fraqueza = rs.getInt("fraqueza");
+                int classe = rs.getInt("classe");
+
+                Raca raca = new Raca(idRaca, nome, descricao, fraqueza, classe);
+                conn.close();
+                return raca;
+            } else {
+                System.out.println("Relação entre Personagem e Raça não encontrada.");
+            }
+            conn.close();
+        } catch (SQLException ex) {
+            System.out.println(ex);
+        }
+        return null;
+    }
 }

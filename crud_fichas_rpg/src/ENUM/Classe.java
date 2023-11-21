@@ -16,7 +16,16 @@ public enum Classe {
         this.valor = valor;
     }
 
-    public int getValor() {
+    public int getClasse() {
         return valor;
+    }
+    
+    public static Classe fromInt(int valor) {
+        for (Classe classe : Classe.values()) {
+            if (classe.valor == valor) {
+                return classe;
+            }
+        }
+        throw new IllegalArgumentException("Classe nao encontrada.");
     }
 }

@@ -3,6 +3,7 @@ package DAO;
 
 import Main.ConexaoMySQL;
 import Model.Personagem;
+import Model.Raca;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

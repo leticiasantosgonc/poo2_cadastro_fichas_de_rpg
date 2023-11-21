@@ -5,6 +5,7 @@ import DAO.ContaPersonagemDAO;
 import DAO.PersonagemDAO;
 import DAO.PersonagemRacaDAO;
 import DAO.RacaDAO;
+import ENUM.Classe;
 import Model.Conta;
 import Model.Personagem;
 import Model.Raca;
@@ -159,15 +160,21 @@ public class main {
                         }
                         break;
                     case 3:
-                       System.out.println("\nDeletar conta\n");
-                            System.out.println("Insira a senha para prosseguir: ");
-                            String snha = scan.nextLine();
-                            if (loggedAccount.getSenha().equals(snha)) {
-                            if (contaDAO.delete(loggedAccount.getIdConta()) > 0) 
-                                System.out.println("\nVoce ira fazer falta :("); 
-                            } else {
-                                System.out.println("Senha incorreta. Tente novamente.");
-                            }
+                        System.out.println("\nDeletar conta\n");
+                        System.out.println("Insira a senha para prosseguir: ");
+                        String snha = scan.nextLine();
+                        if (loggedAccount.getSenha().equals(snha)) {
+                            if (contaDAO.delete(loggedAccount.getIdConta()) > 0) {
+                                loggedAccount = null;
+                                System.out.println("\nVoce ira fazer falta :(");
+                                op = 0;
+                            }else{
+                                System.out.println("erro ao deletar conta");
+                            } 
+                        } else {
+                            System.out.println("Senha incorreta. Tente novamente.");
+                        }
+                            
                         break;
                     case 4:
                         System.out.println("Hora de cadastrar o seu personagem :)\n");
@@ -209,9 +216,14 @@ public class main {
                         
                         Personagem personagem = personagemDAO.read(idPersonagem);
                         if(personagem != null){
+                            Raca raca = personagemRacaDAO.getRacaById(idPersonagem);
                             System.out.println("id: "+ personagem.getIdPersonagem());
                             System.out.println("nome: "+ personagem.getNome());
                             System.out.println("nivel: "+ personagem.getNivel());
+                            System.out.println("raca: " + raca.getNome());
+                            System.out.println("classe: " + Classe.fromInt(raca.getClasse()));
+                            System.out.println("fraqueza: " + + raca.getFraqueza());
+                            System.out.println("descricao: " + raca.getDescricao());
                             System.out.println("_______________________");
                         }
                         break;
@@ -298,11 +310,12 @@ public class main {
                         System.out.println("Opcao invalida! Tente novamente x.x");
                 }
             } while (op != 0);
+            loggedAccount = null;
         } else {
             System.out.println("Login falhou. Encerrando o programa.");
         }
         scan.close();
-    }   
+    }
 
 }
 

@@ -20,6 +20,7 @@ public class Conta {
     }   
 
     public Conta(String login, String senha) {
+        this.idConta = idConta;
         this.login = login;
         this.senha = senha;
     }

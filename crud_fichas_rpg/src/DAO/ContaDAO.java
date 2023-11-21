@@ -11,8 +11,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 public class ContaDAO {
-    public int insert(Conta conta){ // inserir conta
-        try{
+    public int insert(Conta conta) {
+        try {
             Connection conn = ConexaoMySQL.getConexaoMySQL();
 
             PreparedStatement ps = conn.prepareStatement("INSERT INTO conta(login, senha) VALUES (?,?)", Statement.RETURN_GENERATED_KEYS);
@@ -20,11 +20,20 @@ public class ContaDAO {
             ps.setString(2, conta.getSenha());
 
             int rowCount = ps.executeUpdate();
+
+            ResultSet generatedKeys = ps.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                int generatedId = generatedKeys.getInt(1);
+                conta.setIdConta(generatedId);
+            } else {
+                System.out.println("Nenhuma chave foi gerada");
+            }
+
             conn.close();
             return rowCount;
-        }catch(SQLException ex){
+        } catch (SQLException ex) {
             System.out.println(ex);
-        return 0;
+            return 0;
         }
     }
     
