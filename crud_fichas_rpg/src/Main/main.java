@@ -202,7 +202,7 @@ public class main {
 
                         System.out.println("Qual classe? ");
                         String classe = scan.nextLine();
-                        op = Integer.parseInt(desc);
+                        op = Integer.parseInt(classe);
 
                         Raca rac = new Raca(nomeR, desc, op2, op);
                         racaDAO.insert(rac);
@@ -222,7 +222,7 @@ public class main {
                             System.out.println("nivel: "+ personagem.getNivel());
                             System.out.println("raca: " + raca.getNome());
                             System.out.println("classe: " + Classe.fromInt(raca.getClasse()));
-                            System.out.println("fraqueza: " + + raca.getFraqueza());
+                            System.out.println("fraqueza: " + Classe.fromInt(raca.getFraqueza()));
                             System.out.println("descricao: " + raca.getDescricao());
                             System.out.println("_______________________");
                         }
