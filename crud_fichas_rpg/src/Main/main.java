@@ -27,17 +27,17 @@ public class main {
     static RacaDAO racaDAO = new RacaDAO();
     static ContaPersonagemDAO contaPersonagemDAO = new ContaPersonagemDAO();
     static PersonagemRacaDAO personagemRacaDAO = new PersonagemRacaDAO();
-    static Conta loggedAccount;
+    static Conta usuarioLogado;
     static ArrayList<Personagem> listaPersonagens;
             
     public static void main(String[] args) {
-        int op;
+        int op = -1;
         String aux;
         
         conn = conexao.getConexaoMySQL();
         System.out.println("Bem vindo(a) ao cadastro de fichas de rpg :D");
         if(conn == null){
-            System.out.println("Erro: não foi possível conectar ao banco");
+            System.out.println("Erro: nao foi possível conectar ao banco");
         }else{
             while (true) {
                 System.out.println("Ja possui uma conta?");
@@ -59,14 +59,14 @@ public class main {
                             String snha = scan.nextLine();
 
                             if (cnt.getSenha().equals(snha)) {
-                                loggedAccount = cnt;  
+                                usuarioLogado = cnt;  
                                 System.out.println("Bem vindo/a " + cnt.getLogin()+ "!");
                                 break;  
                             } else {
                                 System.out.println("Senha incorreta. Tente novamente.");
                             }
                         } else {
-                            System.out.println("Conta não encontrada. Tente novamente ou crie uma nova conta.");
+                            System.out.println("Conta nao encontrada. Tente novamente ou crie uma nova conta.");
                         }
                     } else if (count == 2) {
                         System.out.println("\nCadastrar nova conta\n");
@@ -80,23 +80,23 @@ public class main {
 
                         if (contaDAO.insert(conta) > 0) {
                             System.out.println("\nBem vindo(a) ao sistema, " + login + "!");
-                            loggedAccount = conta;  
+                            usuarioLogado = conta;  
                             break;  
                         } else {
-                            System.out.println("\nErro: operação não funcionou como esperado");
+                            System.out.println("\nErro: operacao nao funcionou como esperado");
                         }
                     } else if (count == 0) {
-                        System.out.println("Terminando execução.");
+                        System.out.println("Terminando execucao.");
                         return;  
                     } else {
-                        System.out.println("Opção inválida!");
+                        System.out.println("Opcão invalida!");
                     }
                 } catch (NumberFormatException e) {
-                    System.out.println("Opção inválida. Por favor, digite um número válido.");
+                    System.out.println("Opcao invalida. Por favor, digite um numero valido.");
                 }
             }
         }
-        if (loggedAccount != null) { 
+        if (usuarioLogado != null) { 
             do {
                 System.out.println("\n----------------------------------------");
                 System.out.println("|             MENU USUARIO             |");
@@ -109,16 +109,25 @@ public class main {
                         + "\n|7. Deletar personagem                 |");                
                 System.out.println("----------------------------------------");
                 System.out.println("|0. Sair\nEscolha uma opcao -> ");       
-                aux = scan.nextLine();                
-                op = Integer.parseInt(aux);
-
+                
+                boolean isInputValido = false;
+                do {
+                    aux = scan.nextLine();
+                    try {
+                        op = Integer.parseInt(aux);
+                        isInputValido = true;
+                    } catch (NumberFormatException e) {
+                        System.out.println("Opcao invalida. Por favor, digite um numero valido.");
+                    }
+                } while (!isInputValido);
+                
                 switch (op) {
                     case 0:
                         System.out.println("Volte sempre! Mantenha seus personagens atualizados! :D");
                         break;
                     case 1: 
                         System.out.println("\nListar seus personagens \n");
-                        listaPersonagens = contaPersonagemDAO.buscarPersonagemConta(loggedAccount.getIdConta());
+                        listaPersonagens = contaPersonagemDAO.buscarPersonagemConta(usuarioLogado.getIdConta());
                         if(!listaPersonagens.isEmpty()){
                             for(int i = 0; i < listaPersonagens.size(); i++){
                                 Personagem personagem = listaPersonagens.get(i);
@@ -135,25 +144,24 @@ public class main {
                     case 2:
                         System.out.println("\nAlterar conta\n");
                         System.out.println("\n Deseja alterar login? 1. Sim ou 2. Nao");
-                        aux = scan.nextLine();
-                        int resp = Integer.parseInt(aux);
+                        int resp = -1;
 
+                        resp = inputCheck(resp);
                         if (resp == 1) {
                             System.out.println("Digite o novo login: ");
                             String login = scan.nextLine();
-                            loggedAccount.setLogin(login);
-                            System.out.println("Alterado com sucesso " + loggedAccount.getLogin());
+                            usuarioLogado.setLogin(login);
+                            System.out.println("Alterado com sucesso " + usuarioLogado.getLogin());
                         }
+                        
                         System.out.println("Deseja alterar a senha? 1. Sim ou 2. Nao");
-                        aux = scan.nextLine();
-                        resp = Integer.parseInt(aux);
-
+                        resp = inputCheck(resp);  
                         if (resp == 1) {
                             System.out.println("Digite a nova senha: ");
                             String senha = scan.nextLine();
-                            loggedAccount.setSenha(senha);
+                            usuarioLogado.setSenha(senha);
                         }                                
-                        if (contaDAO.update(loggedAccount) > 0) {
+                        if (contaDAO.update(usuarioLogado) > 0) {
                             System.out.println("\nConta atualizada com sucesso! :)");
                         } else {
                             System.out.println("\nErro: operacao nao funcionou como esperado");
@@ -163,9 +171,9 @@ public class main {
                         System.out.println("\nDeletar conta\n");
                         System.out.println("Insira a senha para prosseguir: ");
                         String snha = scan.nextLine();
-                        if (loggedAccount.getSenha().equals(snha)) {
-                            if (contaDAO.delete(loggedAccount.getIdConta()) > 0) {
-                                loggedAccount = null;
+                        if (usuarioLogado.getSenha().equals(snha)) {
+                            if (contaDAO.delete(usuarioLogado.getIdConta()) > 0) {
+                                usuarioLogado = null;
                                 System.out.println("\nVoce ira fazer falta :(");
                                 op = 0;
                             }else{
@@ -188,7 +196,7 @@ public class main {
                         Personagem per = new Personagem(nomeP, op);
                         personagemDAO.insert(per);
 
-                        contaPersonagemDAO.associarPersonagemConta(loggedAccount.getIdConta(), per.getIdPersonagem());
+                        contaPersonagemDAO.associarPersonagemConta(usuarioLogado.getIdConta(), per.getIdPersonagem());
 
                         System.out.println("Qual raca do personagem? ");
                         String nomeR = scan.nextLine();
@@ -225,11 +233,13 @@ public class main {
                             System.out.println("fraqueza: " + Classe.fromInt(raca.getFraqueza()));
                             System.out.println("descricao: " + raca.getDescricao());
                             System.out.println("_______________________");
+                        }else{
+                            System.out.println("Personagem nao encontrado x.x");
                         }
                         break;
                     case 6:  
                         System.out.println("\nAlterar personagem\n");
-                        listaPersonagens = contaPersonagemDAO.buscarPersonagemConta(loggedAccount.getIdConta());
+                        listaPersonagens = contaPersonagemDAO.buscarPersonagemConta(usuarioLogado.getIdConta());
                         if(!listaPersonagens.isEmpty()){
                             for(int i = 0; i < listaPersonagens.size(); i++){
                                 personagem = listaPersonagens.get(i);
@@ -273,12 +283,12 @@ public class main {
                                 System.out.println("\nErro: operacao nao funcionou como esperado");
                             }
                         } else {
-                            System.out.println("\nPersonagem não encontrado.");
+                            System.out.println("\nPersonagem nao encontrado.");
                         }
                         break;
                     case 7:
                         System.out.println("\nDeletar personagem\n");
-                        listaPersonagens = contaPersonagemDAO.buscarPersonagemConta(loggedAccount.getIdConta());
+                        listaPersonagens = contaPersonagemDAO.buscarPersonagemConta(usuarioLogado.getIdConta());
                         if(!listaPersonagens.isEmpty()){
                             for(int i = 0; i < listaPersonagens.size(); i++){
                                 personagem = listaPersonagens.get(i);
@@ -297,8 +307,8 @@ public class main {
 
                         System.out.println("Insira a senha para prosseguir: ");
                         snha = scan.nextLine();
-                        if (loggedAccount.getSenha().equals(snha)) {
-                            contaPersonagemDAO.desassociarPersonagemConta(loggedAccount.getIdConta(), id);    
+                        if (usuarioLogado.getSenha().equals(snha)) {
+                            contaPersonagemDAO.desassociarPersonagemConta(usuarioLogado.getIdConta(), id);    
                             personagemRacaDAO.desassociarRacaPersonagem(id);         
                             personagemDAO.delete(id);
                             System.out.println("Personagem deletado com sucesso");
@@ -310,13 +320,31 @@ public class main {
                         System.out.println("Opcao invalida! Tente novamente x.x");
                 }
             } while (op != 0);
-            loggedAccount = null;
+            usuarioLogado = null;
         } else {
             System.out.println("Login falhou. Encerrando o programa.");
         }
         scan.close();
     }
+    public static int inputCheck(int resp){
+        boolean isInputValido = false;
+        do {
+            String input = scan.nextLine();
+            isInputValido = false;
+            try {
+                resp = Integer.parseInt(input);
 
+                if (resp == 1 || resp == 2) {
+                    isInputValido = true;
+                } else {
+                    System.out.println("Opcao invalida. Digite 1 para Sim ou 2 para Nao.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Opcao invalida. Por favor, digite um número valido.");
+            }
+        } while (!isInputValido);
+    return resp;
+    }
 }
 
 
