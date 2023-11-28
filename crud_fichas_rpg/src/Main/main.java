@@ -29,6 +29,7 @@ public class main {
     static PersonagemRacaDAO personagemRacaDAO = new PersonagemRacaDAO();
     static Conta usuarioLogado;
     static ArrayList<Personagem> listaPersonagens;
+    static ArrayList<Raca> listaRacas;
             
     public static void main(String[] args) {
         int op = -1;
@@ -197,24 +198,52 @@ public class main {
                         personagemDAO.insert(per);
 
                         contaPersonagemDAO.associarPersonagemConta(usuarioLogado.getIdConta(), per.getIdPersonagem());
+                        
+                        System.out.println("1 - Criar nova raca");
+                        System.out.println("2 - Utilizar uma raca existente");
+                        String criar = scan.nextLine();
+                        op = Integer.parseInt(criar);
+                        if (op == 1) {
+                            System.out.println("Qual o nome da raca? ");
+                            String nomeR = scan.nextLine();
 
-                        System.out.println("Qual raca do personagem? ");
-                        String nomeR = scan.nextLine();
+                            System.out.println("Descreva a raca :)");
+                            String desc = scan.nextLine();
 
-                        System.out.println("Descreva o personagem :)");
-                        String desc = scan.nextLine();
+                            System.out.println("Qual a fraqueza? ");
+                            String fraqueza = scan.nextLine();
+                            int op2 = Integer.parseInt(fraqueza);
 
-                        System.out.println("Qual a fraqueza? ");
-                        String fraqueza = scan.nextLine();
-                        int op2 = Integer.parseInt(fraqueza);
+                            System.out.println("Qual classe? ");
+                            String classe = scan.nextLine();
+                            op = Integer.parseInt(classe);                            
+                            Raca rac = new Raca(nomeR, desc, op2, op);
+                            racaDAO.insert(rac);
+                            personagemRacaDAO.associarRacaPersonagem(per.getIdPersonagem(), rac.getIdRaca());   
+                        }else if(op == 2){
+                            listaRacas = racaDAO.list();
+                            if(!listaRacas.isEmpty()){
+                                for(int i = 0; i < listaRacas.size(); i++){
+                                    Raca raca = listaRacas.get(i);
 
-                        System.out.println("Qual classe? ");
-                        String classe = scan.nextLine();
-                        op = Integer.parseInt(classe);
-
-                        Raca rac = new Raca(nomeR, desc, op2, op);
-                        racaDAO.insert(rac);
-                        personagemRacaDAO.associarRacaPersonagem(per.getIdPersonagem(), rac.getIdRaca());
+                                    System.out.println("id: "+ raca.getIdRaca());
+                                    System.out.println("nome: "+ raca.getNome());
+                                    System.out.println("nivel: "+ raca.getFraqueza());
+                                    System.out.println("nivel: "+ raca.getClasse());
+                                    System.out.println("nivel: "+ raca.getDescricao());
+                                    
+                                    System.out.println("_______________________");
+                                }
+                                System.out.println("Digite o id da raca escolhida: ");
+                                String classe = scan.nextLine();
+                                op = Integer.parseInt(classe);                            
+                                
+                                personagemRacaDAO.associarRacaPersonagem(per.getIdPersonagem(),op); 
+                            } else {
+                                System.out.println("Sem racas cadastradas no sistema :(");
+                            }
+                        }
+                        
                         break;
                     case 5:
                         System.out.println("\nProcurar personagem\n");
